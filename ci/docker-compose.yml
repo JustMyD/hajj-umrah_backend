@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ..
+      dockerfile: ci/postgres.Dockerfile
+    container_name: postgres_database
+    env_file:
+      - ../.env
+    environment:
+      # Используем переменные с префиксом DB_ из .env (формат dynaconf)
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-main}
+      # Переопределение конфига через переменные окружения
+      # PostgreSQL автоматически применяет переменные вида POSTGRES_*_CONFIG
+    volumes:
+      # Способ 1: Монтирование кастомного postgresql.conf
+      #- ./ci/postgresql.conf.example:/etc/postgresql/postgresql.conf:ro
+      # Способ 2: Использование дефолтного конфига (закомментируйте строку выше)
+      # PostgreSQL будет использовать дефолтные настройки
+      
+      # Персистентное хранилище данных
+      - postgres_data:/var/lib/postgresql/data
+      
+      # Директория для бэкапов (для pg_dump)
+      - ../backups:/backups
+    ports:
+      - "5432:5432"
+#    command: >
+#      postgres
+#      -c config_file=/etc/postgresql/postgresql.conf
+#      # Если не используете кастомный конфиг, уберите строку выше
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend_internal  # Внутренняя сеть только для БД и бэкенда
+
+  backend:
+    build:
+      context: ..
+      dockerfile: ci/Dockerfile
+      network: host
+    container_name: hajj_umrah_backend
+    env_file:
+      - ../.env
+    environment:
+      # Переопределяем только HOST для БД, так как в контейнере это имя сервиса
+      # Используем имя сервиса из внутренней сети
+      DB_HOST: postgres
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - backend_internal  # Внутренняя сеть для связи с БД
+      - hajj_umrah_network  # Внешняя сеть для связи с фронтендом
+
+volumes:
+  postgres_data:
+
+networks:
+  backend_internal:
+    # Внутренняя сеть - создается автоматически, не доступна извне
+    driver: bridge
+  hajj_umrah_network:
+    # Внешняя сеть для связи с фронтендом
+    # Если сеть не существует, она будет создана автоматически
+    # Для использования в разных docker-compose файлах используйте одинаковое имя
+    name: hajj_umrah_network
+    driver: bridge
+
+

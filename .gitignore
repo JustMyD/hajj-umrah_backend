@@ -22,6 +22,7 @@ var/
 wheels/
 share/python-wheels/
 *.egg-info/
+**/*.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
@@ -200,6 +201,8 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+# Cursor config
+.cursor
 
 # Marimo
 marimo/_static/

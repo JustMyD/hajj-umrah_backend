@@ -1,0 +1,66 @@
+default:
+  NAME: hajj_umrah_backend
+  HOST: 0.0.0.0
+  PORT: 8000
+  WORKERS: 1
+  
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+  DB_NAME: main
+  DB_ECHO: False
+  DB_POOL_SIZE: 30
+  DB_MAX_OVERFLOW: 60
+  DB_POOL_TIMEOUT: 0.1
+  DB_POOL_PRE_PING: True
+
+  # Auth / JWT
+  AUTH_JWT_SECRET: "change_me"
+  AUTH_JWT_ISSUER: "hajj-umrah-backend"
+  AUTH_ACCESS_TTL_MINUTES: 30
+  AUTH_REFRESH_TTL_DAYS: 30
+
+  # Magic link
+  AUTH_MAGIC_TOKEN_TTL_MINUTES: 15
+  AUTH_MAGIC_RATE_LIMIT_PER_HOUR: 5
+  AUTH_MAGIC_TOKEN_PEPPER: "change_me_too"
+
+  # Email change
+  AUTH_EMAIL_CHANGE_TOKEN_TTL_MINUTES: 15
+  AUTH_EMAIL_CHANGE_RATE_LIMIT_PER_HOUR: 5
+  AUTH_EMAIL_CHANGE_TOKEN_PEPPER: "change_me_email_change"
+
+  # Refresh tokens
+  AUTH_REFRESH_TOKEN_PEPPER: "change_me_refresh"
+
+  # OAuth (минимум: google)
+  AUTH_GOOGLE_CLIENT_ID: ""
+
+  # Email (ForwardEmail SMTP)
+  SMTP_HOST: ""
+  SMTP_PORT: 587
+  SMTP_USER: ""
+  SMTP_PASSWORD: ""
+  SMTP_FROM: "no-reply@example.com"
+
+  # Frontend
+  FRONTEND_BASE_URL: "http://localhost:3000"
+
+  # Dev mode
+  DEV_DEFAULT_EMAIL: "dev@test.local"
+
+  LOGGING:
+    version: 1
+    disable_existing_loggers: true
+    formatters:
+      simple:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+    root:
+      level: DEBUG
+      handlers: [console]
