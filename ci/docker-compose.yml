@@ -52,8 +52,8 @@ services:
       # Переопределяем только HOST для БД, так как в контейнере это имя сервиса
       # Используем имя сервиса из внутренней сети
       DB_HOST: postgres
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -64,15 +64,16 @@ services:
 
   nginx:
     image: nginx:1.24-alpine
+    network_mode: host
     container_name: hajj_umrah_nginx
     depends_on:
       - backend
     volumes:
-      - ./ci/nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - "10.8.0.1:80:80"  # ✅ ТОЛЬКО через VPN
-    networks:
-      - hajj_umrah_network
+      - "80:80"  # ✅ ТОЛЬКО через VPN
+        #networks:
+        #- hajj_umrah_network
     restart: unless-stopped
 
 volumes:
@@ -87,6 +88,6 @@ networks:
     # Если сеть не существует, она будет создана автоматически
     # Для использования в разных docker-compose файлах используйте одинаковое имя
     name: hajj_umrah_network
-    driver: bridge
+    external: true
 
 
