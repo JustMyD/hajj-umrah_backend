@@ -26,8 +26,6 @@ services:
       
       # Директория для бэкапов (для pg_dump)
       - ../backups:/backups
-    ports:
-      - "5432:5432"
 #    command: >
 #      postgres
 #      -c config_file=/etc/postgresql/postgresql.conf
@@ -52,8 +50,8 @@ services:
       # Переопределяем только HOST для БД, так как в контейнере это имя сервиса
       # Используем имя сервиса из внутренней сети
       DB_HOST: postgres
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       postgres:
         condition: service_healthy
