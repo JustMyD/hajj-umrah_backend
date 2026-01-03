@@ -27,9 +27,6 @@ FLIGHT_AVAILABILITY_STATUSES_ENUM_NAME = 'flight_availability_statuses'
 
 def upgrade() -> None:
     """Upgrade schema."""
-    bind = op.get_bind()
-    
-    # Таблицы перечислений (enum-like tables)
     # Таблица доступности вылета
     op.create_table(
         'availability',
