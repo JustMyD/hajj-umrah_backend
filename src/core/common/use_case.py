@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Any, Callable
+from typing import Any
 
 from src.core.common.unit_of_work import UnitOfWork
 

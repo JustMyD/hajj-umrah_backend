@@ -1,14 +1,14 @@
-from typing import List, TYPE_CHECKING, Optional
+from typing import Optional
 
 from sqlalchemy import String, Boolean, Integer, Column, Numeric
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableList
 
 from src.infrastructure.db.models.base import Base
 
-if TYPE_CHECKING:
-    from src.infrastructure.db.models.tours import Tours
+# if TYPE_CHECKING:
+#     from src.infrastructure.db.models.tours import Tours
 
 
 class Operators(Base):
