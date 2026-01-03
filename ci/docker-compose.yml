@@ -62,20 +62,6 @@ services:
       - backend_internal  # Внутренняя сеть для связи с БД
       - hajj_umrah_network  # Внешняя сеть для связи с фронтендом
 
-  nginx:
-    image: nginx:1.24-alpine
-    network_mode: host
-    container_name: hajj_umrah_nginx
-    depends_on:
-      - backend
-    volumes:
-      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
-    ports:
-      - "80:80"  # ✅ ТОЛЬКО через VPN
-        #networks:
-        #- hajj_umrah_network
-    restart: unless-stopped
-
 volumes:
   postgres_data:
 
@@ -83,11 +69,11 @@ networks:
   backend_internal:
     # Внутренняя сеть - создается автоматически, не доступна извне
     driver: bridge
+    internal: true
   hajj_umrah_network:
     # Внешняя сеть для связи с фронтендом
     # Если сеть не существует, она будет создана автоматически
     # Для использования в разных docker-compose файлах используйте одинаковое имя
-    name: hajj_umrah_network
     external: true
 
 
