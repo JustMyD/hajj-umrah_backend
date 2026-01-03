@@ -17,7 +17,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 migrations_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(migrations_dir.parent))
 
-from migrations.utils.mock_data_generator import generate_mock_data, NUM_OPERATORS, RUSSIAN_CITIES
+from migrations.utils.mock_data_generator import generate_mock_data, NUM_OPERATORS, RUSSIAN_CITIES  # noqa: E402
 
 # Названия enum типов (должны совпадать с init_tables.py)
 TOUR_TYPE_ENUM_NAME = 'tour_type'
