@@ -41,7 +41,7 @@ services:
   backend:
     build:
       context: ..
-      dockerfile: ci/Dockerfile
+      dockerfile: ../Dockerfile
       network: host
     container_name: hajj_umrah_backend
     env_file:
