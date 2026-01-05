@@ -49,35 +49,45 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=dev
-            type=sha
-
-      - name: Build & push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+#      - name: Extract metadata
+#        id: meta
+#        uses: docker/metadata-action@v5
+#        with:
+#          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#          tags: |
+#            type=raw,value=dev
+#            type=sha
+#
+#      - name: Build & push
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: Dockerfile
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
 
   notify-infra:
     name: Trigger infra deploy
     runs-on: ubuntu-latest
     needs: build
+    environment: dev
 
     steps:
+      - name: Debug token presence
+        run: |
+          if [ -z "${{ secrets.INFRA_REPO_TOKEN }}" ]; then
+            echo "INFRA_REPO_TOKEN is EMPTY"
+            exit 1
+          else
+            echo "INFRA_REPO_TOKEN is PRESENT"
+          fi
+
       - name: Trigger infra workflow
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.INFRA_REPO_TOKEN }}
-          repository: justMyD/infra
+          repository: justMyD/hajj-umrah_infra
           event-type: deploy-service
           client-payload: |
             {
