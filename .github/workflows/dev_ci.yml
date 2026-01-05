@@ -71,6 +71,7 @@ jobs:
     name: Trigger infra deploy
     runs-on: ubuntu-latest
     needs: build
+    environment: dev
 
     steps:
       - name: Debug token presence
