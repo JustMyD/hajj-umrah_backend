@@ -24,7 +24,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Копирование исходного кода
-COPY ci .
+COPY . .
 
 # Переменные окружения
 ENV PYTHONUNBUFFERED=1

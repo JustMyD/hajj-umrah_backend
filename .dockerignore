@@ -36,7 +36,7 @@ htmlcov/
 
 # Documentation
 *.md
-!README.md
+!ci/README.md
 
 # CI/CD
 ci/
