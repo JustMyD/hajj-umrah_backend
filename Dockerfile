@@ -33,6 +33,6 @@ ENV PYTHONPATH=/app
 # Порт приложения
 EXPOSE 8000
 
-RUN chmod +x start.sh
+RUN chmod +x apply_migrations.sh
 
 CMD ["./apply_migrations.sh"]
