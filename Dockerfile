@@ -33,5 +33,6 @@ ENV PYTHONPATH=/app
 # Порт приложения
 EXPOSE 8000
 
-# Команда запуска
-CMD ["uv", "run", "python", "start.py"]
+RUN chmod +x start.sh
+
+CMD ["./apply_migrations.sh"]
