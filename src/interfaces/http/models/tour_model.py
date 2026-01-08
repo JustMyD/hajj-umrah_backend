@@ -29,7 +29,7 @@ class ToursAggregatesRequest(BaseModel):
 class TourOperator(BaseModel):
     name: str = Field(description="Название туроператора")
     logo: str = Field(description="Путь до изображения")
-    yearsOnMarket: int = Field(description="Сколько лет на рынке")
+    foundation_year: int = Field(description="Сколько лет на рынке")
     verified: bool = Field(description="Аккредитация Хадж миссия РФ")
     features: List[str] = Field(description="Особенности туроператора")
 

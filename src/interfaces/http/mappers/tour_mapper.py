@@ -21,7 +21,7 @@ def map_search_tours_model_to_response(item: TourSearchReadModel) -> ToursRespon
     operator = TourOperator(
         name=item.operator_name,
         logo=item.operator_logo,
-        yearsOnMarket=item.operator_foundation_year,
+        foundation_year=item.operator_foundation_year,
         verified=item.operator_verified,
         features=item.operator_features,
     )
