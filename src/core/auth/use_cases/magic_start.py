@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from src.core.auth.entities.magic_link_token import MagicLinkToken
@@ -40,7 +40,7 @@ class MagicStartUseCase:
         user_agent: str | None = None,
         now: datetime | None = None,
     ) -> MagicStartResult:
-        now = now or datetime.utcnow()
+        now = now or datetime.now(timezone.utc)
         since = now - timedelta(hours=1)
         recent = await self.magic_repo.count_recent_requests(email=email, since=since)
         if recent >= self.rate_limit_per_hour:

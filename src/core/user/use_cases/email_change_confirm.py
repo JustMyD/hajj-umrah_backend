@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.core.user.entities.user import User
 from src.core.user.ports.email_change_repository import EmailChangeRepository
@@ -31,7 +31,7 @@ class EmailChangeConfirmUseCase:
         user_agent: str | None = None,
         now: datetime | None = None,
     ) -> EmailChangeConfirmResult:
-        now = now or datetime.utcnow()
+        now = now or datetime.now(timezone.utc)
         new_email = await self.repo.consume_token(user_id=user.id, token_hash=token_hash, now=now)
         if new_email is None:
             raise ValueError("invalid or expired token")

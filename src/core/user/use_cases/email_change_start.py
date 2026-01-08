@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from src.core.auth.ports.email_sender import EmailSender
@@ -53,7 +53,7 @@ class EmailChangeStartUseCase:
         if user.email == new_email:
             raise ValueError("new email must be different from current email")
         
-        now = now or datetime.utcnow()
+        now = now or datetime.now(timezone.utc)
         since = now - timedelta(hours=1)
         recent = await self.repo.count_recent_requests(user_id=user.id, since=since)
         if recent >= self.rate_limit_per_hour:

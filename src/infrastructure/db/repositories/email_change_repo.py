@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
 from sqlalchemy import and_, func, select, update
@@ -40,7 +40,7 @@ class SqlAlchemyEmailChangeRepository(EmailChangeRepository):
             new_email=new_email,
             token_hash=token_hash,
             expires_at=expires_at,
-            created_at=created_at or datetime.utcnow(),
+            created_at=created_at or datetime.now(timezone.utc),
             request_ip=request_ip,
             user_agent=user_agent,
         )
