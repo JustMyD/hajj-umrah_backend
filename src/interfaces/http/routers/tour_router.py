@@ -46,7 +46,7 @@ async def get_tours_by_filters(
 async def get_tours_by_ids(
     search_request: ToursIdsRequest,
     use_case: FromDishka[GetTourByIdsUseCase],
-):
+) -> List[ToursResponse]:
     """
     Поиск туров по ID
     """

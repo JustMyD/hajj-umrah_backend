@@ -14,8 +14,8 @@ class TourSearchReadModel:
     operator_features: List[str]
 
     title: str
-    type: str
-    tarif: str
+    type: dict
+    tarif: dict
     price: int
     original_price: Optional[int]
     duration: int

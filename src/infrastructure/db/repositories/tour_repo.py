@@ -51,8 +51,8 @@ class SqlAlchemyTourRepository(TourRepository):
                 operator_verified=flight.tour.operator_verified,
                 operator_features=flight.tour.operator_features,
                 title=flight.tour.title,
-                type=flight.tour.type.value,  # Получаем значение через relationship
-                tarif=flight.tour.tarif.value,  # Получаем значение через relationship
+                type={"value": flight.tour.type.value, "label": flight.tour.type.label},
+                tarif={"value": flight.tour.tarif.value, "label": flight.tour.tarif.label},
                 price=int(flight.price),
                 original_price=None,
                 duration=flight.tour.duration,
@@ -185,8 +185,8 @@ class SqlAlchemyTourRepository(TourRepository):
                 operator_verified=flight.tour.operator_verified,
                 operator_features=flight.tour.operator_features,
                 title=flight.tour.title,
-                type=flight.tour.type.value,  # Получаем значение через relationship
-                tarif=flight.tour.tarif.label,  # Получаем значение через relationship
+                type={"value": flight.tour.type.value, "label": flight.tour.type.label},
+                tarif={"value": flight.tour.tarif.value, "label": flight.tour.tarif.label},
                 price=int(flight.price),
                 original_price=None,
                 duration=flight.tour.duration,

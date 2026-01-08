@@ -17,18 +17,17 @@ from src.core.tours.entities.flight import TourFlights
 #     limited = "limited"
 #     sold_out = "sold_out"
 #
-#
-# class TourType(str, Enum):
-#     umrah = "umrah"
-#     hajj = "hajj"
-#     all = "all"
-#
-#
-# class Tour_Tarifs(str, Enum):
-#     budget = "budget"
-#     standard = "standard"
-#     comfort = "comfort"
-#     premium = "premium"
+
+@dataclass(frozen=True)
+class TourType:
+    value: str
+    label: str
+
+
+@dataclass(frozen=True)
+class TourTarifs:
+    value: str
+    label: str
 
 
 @dataclass(frozen=True)
@@ -36,7 +35,7 @@ class Tour:
     id: UUID
     operator: TourOperator
     title: Optional[str]
-    type: str  # Значение из таблицы tour_types
+    type: TourType
     price: Price
     original_price: Price | None
     duration: int
@@ -45,7 +44,7 @@ class Tour:
     availability: str  # Значение из таблицы availability
     # availability_max_count: int
     # availability_current_count: int
-    tarif: str  # Значение из таблицы tour_tarifs
+    tarif: TourTarifs
     flights: TourFlights
     hotels: List[HotelInfo]
     is_published: bool = False

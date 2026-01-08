@@ -4,6 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, NaiveDatetime
 
+from src.interfaces.http.models.common import LabeledValue
+
 
 class SearchToursRequest(BaseModel):
     tour_type: Optional[str] = Field(default=None, description="Тип тура")
@@ -71,14 +73,14 @@ class ToursResponse(BaseModel):
     id: UUID
     operator: TourOperator
     title: Optional[str] = Field(description="Название тура")
-    type: str = Field(description="Тип умра/хадж")
+    type: LabeledValue = Field(description="Тип умра/хадж")
     price: int = Field(description="Цена конкретного вылета")
     originalPrice: Optional[int] = Field(description="Изначальная цена тура")
     duration: int = Field(description="Продолжительность тура")
     location: str = Field(description="Посещаемые города")
     visaIncluded: bool
     availability: str = Field(description="Статус доступности")
-    tarif: str = Field(description="Тариф")
+    tarif: LabeledValue = Field(description="Тариф")
     flights: TourFlights
     hotels: List[TourHotels]
 
