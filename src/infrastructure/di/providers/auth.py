@@ -88,6 +88,7 @@ class AuthProvider(Provider):
         self,
         magic_repo: MagicLinkRepository,
         email_sender: EmailSender,
+        sqlalchemy_uow: UnitOfWork,
         settings: Dynaconf,
     ) -> MagicStartUseCase:
         return MagicStartUseCase(
@@ -96,6 +97,7 @@ class AuthProvider(Provider):
             token_ttl_minutes=int(settings.AUTH_MAGIC_TOKEN_TTL_MINUTES),
             rate_limit_per_hour=int(settings.AUTH_MAGIC_RATE_LIMIT_PER_HOUR),
             frontend_base_url=str(settings.FRONTEND_BASE_URL),
+            uow=sqlalchemy_uow,
         )
 
     @provide(scope=Scope.REQUEST)
@@ -106,6 +108,7 @@ class AuthProvider(Provider):
         user_repo: UserRepository,
         token_service: TokenService,
         refresh_token_repo: RefreshTokenRepository,
+        sqlalchemy_uow: UnitOfWork,
         settings: Dynaconf,
     ) -> MagicVerifyUseCase:
         return MagicVerifyUseCase(
@@ -116,6 +119,7 @@ class AuthProvider(Provider):
             refresh_token_repo=refresh_token_repo,
             refresh_token_pepper=str(settings.AUTH_REFRESH_TOKEN_PEPPER),
             refresh_ttl_days=int(settings.AUTH_REFRESH_TTL_DAYS),
+            uow=sqlalchemy_uow,
         )
 
     @provide(scope=Scope.REQUEST)
@@ -171,7 +175,7 @@ class AuthProvider(Provider):
             refresh_token_repo=refresh_token_repo,
             token_service=token_service,
             refresh_token_pepper=str(settings.AUTH_REFRESH_TOKEN_PEPPER),
-            uow=sqlalchemy_uow
+            uow=sqlalchemy_uow,
         )
 
 

@@ -12,6 +12,8 @@ from src.core.auth.ports.token_service import TokenService
 from src.core.user.entities.user import User
 from src.core.user.ports.user_repository import UserRepository
 from src.core.auth.use_cases.oauth_exchange import TokensPair
+from src.core.common.use_case import UseCase
+from src.core.common.unit_of_work import UnitOfWork
 
 
 @dataclass(frozen=True)
@@ -20,7 +22,7 @@ class MagicVerifyResult:
     tokens: TokensPair
 
 
-class MagicVerifyUseCase:
+class MagicVerifyUseCase(UseCase):
     def __init__(
         self,
         *,
@@ -31,7 +33,9 @@ class MagicVerifyUseCase:
         refresh_token_repo: RefreshTokenRepository,
         refresh_token_pepper: str,
         refresh_ttl_days: int,
+        uow: UnitOfWork,
     ) -> None:
+        super().__init__(uow=uow)
         self.magic_repo = magic_repo
         self.identity_repo = identity_repo
         self.user_repo = user_repo
@@ -97,9 +101,9 @@ class MagicVerifyUseCase:
                 user_agent=user_agent,
                 created_at=now,
             )
-            await self.refresh_token_repo.session.commit()
+            await self.uow.commit()
         except Exception as e:
-            await self.refresh_token_repo.session.rollback()
+            await self.uow.rollback()
             raise e
         
         return MagicVerifyResult(user=user, tokens=tokens)
