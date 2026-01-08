@@ -24,6 +24,7 @@ from src.infrastructure.db.repositories.auth_repo import (
     SqlAlchemyRefreshTokenRepository,
 )
 from src.infrastructure.email.smtp_email_sender import SmtpEmailSender
+from src.infrastructure.common.db_unit_of_work import SqlAlchemyUnitOfWork
 
 
 class AuthProvider(Provider):
@@ -163,12 +164,14 @@ class AuthProvider(Provider):
         self,
         refresh_token_repo: RefreshTokenRepository,
         token_service: TokenService,
+        sqlalchemy_uow: UnitOfWork,
         settings: Dynaconf,
     ) -> LogoutUseCase:
         return LogoutUseCase(
             refresh_token_repo=refresh_token_repo,
             token_service=token_service,
             refresh_token_pepper=str(settings.AUTH_REFRESH_TOKEN_PEPPER),
+            uow=sqlalchemy_uow
         )
 
 
