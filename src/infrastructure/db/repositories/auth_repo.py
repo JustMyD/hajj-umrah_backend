@@ -96,7 +96,7 @@ class SqlAlchemyMagicLinkRepository(MagicLinkRepository):
             user_agent=token.user_agent,
         )
         self.session.add(model)
-        await self.session.commit()
+        await self.session.flush()
         return _magic_to_entity(model)
 
     async def consume_token(self, *, email: str, token_hash: str, now: datetime) -> MagicLinkToken | None:
@@ -115,7 +115,7 @@ class SqlAlchemyMagicLinkRepository(MagicLinkRepository):
             .returning(MagicLinkTokens)
         )
         model = res.scalar_one_or_none()
-        await self.session.commit()
+        await self.session.flush()
         return _magic_to_entity(model) if model else None
 
 
