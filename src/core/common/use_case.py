@@ -9,5 +9,5 @@ class UseCase(ABC):
         self.uow = uow
 
     @abstractmethod
-    def execute(self, *args, **kwargs) -> Any:
+    async def execute(self, *args, **kwargs) -> Any:
         raise NotImplementedError

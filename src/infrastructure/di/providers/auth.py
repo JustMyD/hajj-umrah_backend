@@ -24,7 +24,6 @@ from src.infrastructure.db.repositories.auth_repo import (
     SqlAlchemyRefreshTokenRepository,
 )
 from src.infrastructure.email.smtp_email_sender import SmtpEmailSender
-from src.infrastructure.common.db_unit_of_work import SqlAlchemyUnitOfWork
 
 
 class AuthProvider(Provider):
