@@ -1,8 +1,8 @@
 from uuid import UUID
 from typing import List
 
-from core.common.use_case import UseCase
 from src.core.user.ports.user_repository import UserRepository
+from src.core.common.use_case import UseCase
 from src.core.common.unit_of_work import UnitOfWork
 
 

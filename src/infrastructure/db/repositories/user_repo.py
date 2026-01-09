@@ -131,12 +131,12 @@ class SqlAlchemyUserRepository(UserRepository):
         )
         await self.session.execute(stmt)
 
-    async def merge_favorite_tours(self, tour_ids: List[UUID], user_id: UUID) -> bool:
+    async def merge_favorite_tours(self, tour_ids: List[UUID], user_id: UUID) -> None:
         """
         Слияние локального и онлайн списков избранного
         """
         if not tour_ids:
-            return True
+            return
 
         stmt = insert(UserFavorites).values([
             {
@@ -147,13 +147,7 @@ class SqlAlchemyUserRepository(UserRepository):
         ]).on_conflict_do_nothing(
             index_elements=["user_id", "tour_id"]
         )
-
-        try:
-            await self.session.execute(stmt)
-            return True
-        except Exception as e:
-            logging.error(str(e))
-            return False
+        await self.session.execute(stmt)
 
     async def merge_comparison_tours(self, tour_ids: List[UUID], user_id: UUID) -> None:
         """

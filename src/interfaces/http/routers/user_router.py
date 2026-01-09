@@ -137,8 +137,8 @@ async def merge_tour_from_favorites(
     use_case: FromDishka[MergeFavoritesUseCase],
     current_user: User = Depends(get_current_user),
 ) -> OkResponse:
-    result = await use_case.execute(tour_ids=body.tour_ids, user_id=current_user.id)
-    return OkResponse(ok=result)
+    await use_case.execute(tour_ids=body.tour_ids, user_id=current_user.id)
+    return OkResponse(ok=True)
 
 
 @user_router.put("/me/comparison", response_model=OkResponse)

@@ -43,7 +43,7 @@ class UserRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def merge_favorite_tours(self, tour_ids: List[UUID], user_id: UUID) -> bool:
+    async def merge_favorite_tours(self, tour_ids: List[UUID], user_id: UUID) -> None:
         raise NotImplementedError
 
     @abstractmethod
