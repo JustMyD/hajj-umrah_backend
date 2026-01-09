@@ -12,6 +12,7 @@ from src.core.auth.use_cases.magic_start import MagicStartUseCase
 from src.core.auth.use_cases.magic_verify import MagicVerifyUseCase
 from src.core.auth.use_cases.oauth_exchange import OAuthExchangeUseCase
 from src.core.auth.use_cases.refresh_tokens import RefreshTokensUseCase
+from src.core.common.exceptions import RateLimitError
 from src.infrastructure.auth.magic_tokens import hash_token
 from src.interfaces.http.mappers.user_mapper import map_user_to_response
 from src.interfaces.http.models.auth_model import (
@@ -77,14 +78,21 @@ async def magic_start(
 ) -> MagicStartResponse:
     raw_token = secrets.token_urlsafe(32)
     token_hash = hash_token(token=raw_token, pepper=str(settings.AUTH_MAGIC_TOKEN_PEPPER))
-    await use_case.execute(
-        email=body.email,
-        raw_token=raw_token,
-        token_hash=token_hash,
-        request_ip=request.client.host if request.client else None,
-        user_agent=request.headers.get("User-Agent"),
-    )
-    return MagicStartResponse(ok=True)
+    try:
+        await use_case.execute(
+            email=body.email,
+            raw_token=raw_token,
+            token_hash=token_hash,
+            request_ip=request.client.host if request.client else None,
+            user_agent=request.headers.get("User-Agent"),
+        )
+        return MagicStartResponse(ok=True)
+    except RateLimitError:
+        return MagicStartResponse(ok=True)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @auth_router.post("/magic/verify", response_model=AuthResponse)

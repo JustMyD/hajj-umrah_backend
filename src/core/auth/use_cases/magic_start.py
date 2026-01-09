@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -9,11 +8,7 @@ from src.core.auth.ports.email_sender import EmailSender
 from src.core.auth.ports.magic_link_repository import MagicLinkRepository
 from src.core.common.use_case import UseCase
 from src.core.common.unit_of_work import UnitOfWork
-
-
-@dataclass(frozen=True)
-class MagicStartResult:
-    ok: bool = True
+from src.core.common.exceptions import RateLimitError
 
 
 class MagicStartUseCase(UseCase):
@@ -43,14 +38,14 @@ class MagicStartUseCase(UseCase):
         request_ip: str | None = None,
         user_agent: str | None = None,
         now: datetime | None = None,
-    ) -> MagicStartResult:
+    ) -> None:
         try:
             now = now or datetime.now(timezone.utc)
             since = now - timedelta(hours=1)
             recent = await self.magic_repo.count_recent_requests(email=email, since=since)
             if recent >= self.rate_limit_per_hour:
                 # не раскрываем детали, чтобы не помогать злоумышленнику
-                return MagicStartResult(ok=True)
+                raise RateLimitError("rate limit exceeded")
 
             expires_at = now + timedelta(minutes=self.token_ttl_minutes)
             await self.magic_repo.create_token(
@@ -69,7 +64,6 @@ class MagicStartUseCase(UseCase):
             await self.email_sender.send_magic_link(to_email=email, magic_link_url=magic_link_url)
 
             await self.uow.commit()
-            return MagicStartResult(ok=True)
         except Exception as e:
             await self.uow.rollback()
             raise e

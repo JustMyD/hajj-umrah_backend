@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from distutils.util import execute
 
 from src.core.user.entities.user import User
 from src.core.user.ports.email_change_repository import EmailChangeRepository

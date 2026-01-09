@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -10,15 +9,7 @@ from src.core.user.ports.email_change_repository import EmailChangeRepository
 from src.core.user.ports.user_repository import UserRepository
 from src.core.common.use_case import UseCase
 from src.core.common.unit_of_work import UnitOfWork
-
-
-@dataclass(frozen=True)
-class EmailChangeStartResult:
-    ok: bool = True
-
-
-class RateLimitError(Exception):
-    """ Ошибка превышения лимита запросов """
+from src.core.common.exceptions import RateLimitError
 
 
 class EmailChangeStartUseCase(UseCase):
@@ -51,7 +42,7 @@ class EmailChangeStartUseCase(UseCase):
         request_ip: str | None = None,
         user_agent: str | None = None,
         now: datetime | None = None,
-    ) -> EmailChangeStartResult:
+    ) -> None:
         try:
             # Проверяем, что новый email не занят другим пользователем
             existing_user = await self.user_repo.get_by_email(new_email)
@@ -84,7 +75,6 @@ class EmailChangeStartUseCase(UseCase):
             await self.email_sender.send_email_change_link(to_email=new_email, email_change_url=url)
 
             await self.uow.commit()
-            return EmailChangeStartResult(ok=True)
         except Exception as e:
             await self.uow.rollback()
             raise e
