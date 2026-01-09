@@ -127,18 +127,12 @@ class SqlAlchemyUserRepository(UserRepository):
             logging.error(str(e))
             return False
 
-    async def add_comparison_tour(self, user_id: UUID, tour_id: UUID) -> bool:
+    async def add_comparison_tour(self, user_id: UUID, tour_id: UUID) -> None:
         stmt = insert(UserComparisons).values(
             user_id=user_id,
             tour_id=tour_id,
         ).on_conflict_do_nothing()
-
-        try:
-            await self.session.execute(stmt)
-            return True
-        except Exception as e:
-            logging.error(str(e))
-            return False
+        await self.session.execute(stmt)
 
     async def remove_comparison_tour(self, user_id: UUID, tour_id: UUID) -> bool:
         stmt = delete(UserComparisons).where(UserComparisons.user_id == user_id, UserComparisons.tour_id == tour_id)

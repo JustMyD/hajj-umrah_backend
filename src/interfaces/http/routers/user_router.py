@@ -138,8 +138,8 @@ async def add_tour_to_comparison(
     use_case: FromDishka[AddToComparisonUseCase],
     current_user: User = Depends(get_current_user),
 ) -> OkResponse:
-    result = await use_case.execute(user_id=current_user.id, tour_id=body.tour_id)
-    return OkResponse(ok=result)
+    await use_case.execute(user_id=current_user.id, tour_id=body.tour_id)
+    return OkResponse(ok=True)
 
 
 @user_router.delete("/me/comparison", response_model=OkResponse)

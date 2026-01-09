@@ -14,6 +14,7 @@ from src.core.user.use_cases.add_to_favorites import AddToFavoritesUseCase
 from src.core.user.use_cases.delete_from_favorites import DeleteFromFavoritesUseCase
 from src.core.user.use_cases.merge_favorites import MergeFavoritesUseCase
 from src.core.user.use_cases.merge_comparison import MergeComparisonUseCase
+from src.core.common.unit_of_work import UnitOfWork
 from src.infrastructure.db.repositories.email_change_repo import SqlAlchemyEmailChangeRepository
 from src.infrastructure.db.repositories.user_repo import SqlAlchemyUserRepository
 
@@ -57,8 +58,8 @@ class UserProvider(Provider):
         return EmailChangeConfirmUseCase(repo=repo, user_repo=user_repo)
 
     @provide(scope=Scope.REQUEST)
-    def provide_add_to_comparison_use_case(self, user_repo: UserRepository) -> AddToComparisonUseCase:
-        return AddToComparisonUseCase(user_repo)
+    def provide_add_to_comparison_use_case(self, user_repo: UserRepository, uow: UnitOfWork) -> AddToComparisonUseCase:
+        return AddToComparisonUseCase(user_repo, uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_remove_from_comparison_use_case(self, user_repo: UserRepository) -> DeleteFromComparisonUseCase:
