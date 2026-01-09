@@ -1,12 +1,20 @@
 from uuid import UUID
 from typing import List
 
+from core.common.use_case import UseCase
 from src.core.user.ports.user_repository import UserRepository
+from src.core.common.unit_of_work import UnitOfWork
 
 
-class MergeComparisonUseCase:
-    def __init__(self, repo: UserRepository):
+class MergeComparisonUseCase(UseCase):
+    def __init__(self, repo: UserRepository, uow: UnitOfWork):
+        super().__init__(uow)
         self.repo = repo
 
-    async def execute(self, tour_ids: List[UUID], user_id: UUID) -> bool:
-        return await self.repo.merge_comparison_tours(tour_ids, user_id)
+    async def execute(self, tour_ids: List[UUID], user_id: UUID) -> None:
+        try:
+            await self.repo.merge_comparison_tours(tour_ids, user_id)
+            await self.uow.commit()
+        except Exception as e:
+            await self.uow.rollback()
+            raise e

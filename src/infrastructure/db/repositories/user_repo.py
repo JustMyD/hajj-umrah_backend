@@ -155,12 +155,12 @@ class SqlAlchemyUserRepository(UserRepository):
             logging.error(str(e))
             return False
 
-    async def merge_comparison_tours(self, tour_ids: List[UUID], user_id: UUID) -> bool:
+    async def merge_comparison_tours(self, tour_ids: List[UUID], user_id: UUID) -> None:
         """
         Слияние локального и онлайн списков сравнения
         """
         if not tour_ids:
-            return True
+            return
 
         stmt = insert(UserComparisons).values([
             {
@@ -171,10 +171,4 @@ class SqlAlchemyUserRepository(UserRepository):
         ]).on_conflict_do_nothing(
             index_elements=["user_id", "tour_id"]
         )
-
-        try:
-            await self.session.execute(stmt)
-            return True
-        except Exception as e:
-            logging.error(str(e))
-            return False
+        await self.session.execute(stmt)
