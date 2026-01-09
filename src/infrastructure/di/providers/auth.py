@@ -130,6 +130,7 @@ class AuthProvider(Provider):
         token_service: TokenService,
         user_repo: UserRepository,
         refresh_token_repo: RefreshTokenRepository,
+        sqlalchemy_uow: UnitOfWork,
         settings: Dynaconf,
     ) -> RefreshTokensUseCase:
         return RefreshTokensUseCase(
@@ -138,6 +139,7 @@ class AuthProvider(Provider):
             refresh_token_repo=refresh_token_repo,
             refresh_token_pepper=str(settings.AUTH_REFRESH_TOKEN_PEPPER),
             refresh_ttl_days=int(settings.AUTH_REFRESH_TTL_DAYS),
+            uow=sqlalchemy_uow,
         )
 
     @provide(scope=Scope.REQUEST)

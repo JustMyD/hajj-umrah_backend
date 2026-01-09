@@ -8,6 +8,8 @@ from src.core.auth.ports.token_service import TokenService
 from src.core.user.entities.user import User
 from src.core.user.ports.user_repository import UserRepository
 from src.core.auth.use_cases.oauth_exchange import TokensPair
+from src.core.common.use_case import UseCase
+from src.core.common.unit_of_work import UnitOfWork
 from src.infrastructure.auth.magic_tokens import hash_token
 
 
@@ -17,7 +19,7 @@ class RefreshResult:
     tokens: TokensPair
 
 
-class RefreshTokensUseCase:
+class RefreshTokensUseCase(UseCase):
     def __init__(
         self,
         *,
@@ -26,7 +28,9 @@ class RefreshTokensUseCase:
         refresh_token_repo: RefreshTokenRepository,
         refresh_token_pepper: str,
         refresh_ttl_days: int,
+        uow: UnitOfWork,
     ) -> None:
+        super().__init__(uow=uow)
         self.token_service = token_service
         self.user_repo = user_repo
         self.refresh_token_repo = refresh_token_repo
@@ -77,10 +81,10 @@ class RefreshTokensUseCase:
                 user_agent=user_agent,
                 created_at=now,  # Используем timezone-aware UTC datetime для корректного времени создания
             )
-            await self.refresh_token_repo.session.commit()
+            await self.uow.commit()
         
         except Exception as e:
-            await self.refresh_token_repo.session.rollback()
+            await self.uow.rollback()
             raise e
         
         tokens = TokensPair(access=new_access_token, refresh=new_refresh_token)
