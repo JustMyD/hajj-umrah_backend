@@ -62,8 +62,10 @@ class UserProvider(Provider):
         return AddToComparisonUseCase(user_repo, uow)
 
     @provide(scope=Scope.REQUEST)
-    def provide_remove_from_comparison_use_case(self, user_repo: UserRepository) -> DeleteFromComparisonUseCase:
-        return DeleteFromComparisonUseCase(user_repo)
+    def provide_remove_from_comparison_use_case(
+        self, user_repo: UserRepository, uow: UnitOfWork
+    ) -> DeleteFromComparisonUseCase:
+        return DeleteFromComparisonUseCase(user_repo, uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_add_to_favorites_use_case(self, user_repo: UserRepository, uow: UnitOfWork) -> AddToFavoritesUseCase:

@@ -149,8 +149,8 @@ async def delete_tour_from_comparison(
     use_case: FromDishka[DeleteFromComparisonUseCase],
     current_user: User = Depends(get_current_user),
 ) -> OkResponse:
-    result = await use_case.execute(user_id=current_user.id, tour_id=body.tour_id)
-    return OkResponse(ok=result)
+    await use_case.execute(user_id=current_user.id, tour_id=body.tour_id)
+    return OkResponse(ok=True)
 
 
 @user_router.post("/me/comparison/merge", response_model=OkResponse)
