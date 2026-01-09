@@ -6,6 +6,7 @@ from typing import List
 
 from dynaconf import Dynaconf
 from fastapi import APIRouter, Depends, Request
+from fastapi.exceptions import HTTPException
 from dishka.integrations.fastapi import FromDishka, inject
 
 from src.core.user.entities.user import User
@@ -20,6 +21,7 @@ from src.core.user.use_cases.add_to_favorites import AddToFavoritesUseCase
 from src.core.user.use_cases.delete_from_favorites import DeleteFromFavoritesUseCase
 from src.core.user.use_cases.merge_comparison import MergeComparisonUseCase
 from src.core.user.use_cases.merge_favorites import MergeFavoritesUseCase
+from src.core.user.use_cases.email_change_start import RateLimitError
 from src.infrastructure.auth.magic_tokens import hash_token
 from src.interfaces.http.dependencies.current_user import get_current_user
 from src.interfaces.http.mappers.user_mapper import map_user_to_response
@@ -70,13 +72,21 @@ async def email_change_start(
 ) -> OkResponse:
     raw_token = secrets.token_urlsafe(32)
     token_hash = hash_token(token=raw_token, pepper=str(settings.AUTH_EMAIL_CHANGE_TOKEN_PEPPER))
-    await use_case.execute(
-        user=current_user,
-        new_email=body.new_email,
-        raw_token=raw_token,
-        token_hash=token_hash,
-    )
-    return OkResponse(ok=True)
+    try:
+        await use_case.execute(
+            user=current_user,
+            new_email=body.new_email,
+            raw_token=raw_token,
+            token_hash=token_hash,
+        )
+        return OkResponse(ok=True)
+    except RateLimitError:
+        # Маскируем ошибку от злоумышленника
+        return OkResponse(ok=True)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @user_router.post("/me/email/change/confirm", response_model=UserResponse)

@@ -38,6 +38,7 @@ class UserProvider(Provider):
         repo: EmailChangeRepository,
         user_repo: UserRepository,
         email_sender: EmailSender,
+        sqlalchemy_uow: UnitOfWork,
         settings: Dynaconf,
     ) -> EmailChangeStartUseCase:
         return EmailChangeStartUseCase(
@@ -47,6 +48,7 @@ class UserProvider(Provider):
             frontend_base_url=str(settings.FRONTEND_BASE_URL),
             token_ttl_minutes=int(settings.AUTH_EMAIL_CHANGE_TOKEN_TTL_MINUTES),
             rate_limit_per_hour=int(settings.AUTH_EMAIL_CHANGE_RATE_LIMIT_PER_HOUR),
+            uow=sqlalchemy_uow,
         )
 
     @provide(scope=Scope.REQUEST)

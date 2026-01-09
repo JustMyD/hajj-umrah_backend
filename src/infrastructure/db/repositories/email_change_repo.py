@@ -45,7 +45,7 @@ class SqlAlchemyEmailChangeRepository(EmailChangeRepository):
             user_agent=user_agent,
         )
         self.session.add(model)
-        await self.session.commit()
+        await self.session.flush()
 
     async def consume_token(self, *, user_id: UUID, token_hash: str, now: datetime) -> str | None:
         res = await self.session.execute(
