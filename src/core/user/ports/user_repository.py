@@ -27,7 +27,7 @@ class UserRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def add_favorite_tour(self, user_id: UUID, tour_id: UUID) -> bool:
+    async def add_favorite_tour(self, user_id: UUID, tour_id: UUID) -> None:
         raise NotImplementedError
 
     @abstractmethod
