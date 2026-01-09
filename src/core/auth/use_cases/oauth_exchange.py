@@ -11,6 +11,8 @@ from src.core.auth.ports.refresh_token_repository import RefreshTokenRepository
 from src.core.auth.ports.token_service import TokenService
 from src.core.user.entities.user import User
 from src.core.user.ports.user_repository import UserRepository
+from src.core.common.use_case import UseCase
+from src.core.common.unit_of_work import UnitOfWork
 
 
 @dataclass(frozen=True)
@@ -29,7 +31,7 @@ class AuthResult:
     suggested_email: str | None = None
 
 
-class OAuthExchangeUseCase:
+class OAuthExchangeUseCase(UseCase):
     def __init__(
         self,
         *,
@@ -40,7 +42,9 @@ class OAuthExchangeUseCase:
         refresh_token_repo: RefreshTokenRepository,
         refresh_token_pepper: str,
         refresh_ttl_days: int,
+        uow: UnitOfWork,
     ) -> None:
+        super().__init__(uow=uow)
         self.oauth_validator = oauth_validator
         self.identity_repo = identity_repo
         self.user_repo = user_repo
@@ -117,8 +121,9 @@ class OAuthExchangeUseCase:
                 user_agent=user_agent,
                 created_at=now,
             )
+            await self.uow.commit()
         except Exception as e:
-            await self.refresh_token_repo.session.rollback()
+            await self.uow.rollback()
             raise e
         
         suggested_email = None
