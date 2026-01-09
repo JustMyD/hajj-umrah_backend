@@ -112,14 +112,11 @@ class SqlAlchemyUserRepository(UserRepository):
         ).on_conflict_do_nothing()
         await self.session.execute(stmt)
 
-    async def remove_favorite_tour(self, user_id: UUID, tour_id: UUID) -> bool:
-        stmt = delete(UserFavorites).where(UserFavorites.user_id == user_id, UserFavorites.tour_id == tour_id)
-        try:
-            await self.session.execute(stmt)
-            return True
-        except Exception as e:
-            logging.error(str(e))
-            return False
+    async def remove_favorite_tour(self, user_id: UUID, tour_id: UUID) -> None:
+        stmt = delete(UserFavorites).where(
+            UserFavorites.user_id == user_id, UserFavorites.tour_id == tour_id
+        )
+        await self.session.execute(stmt)
 
     async def add_comparison_tour(self, user_id: UUID, tour_id: UUID) -> None:
         stmt = insert(UserComparisons).values(

@@ -116,8 +116,8 @@ async def delete_tour_from_favorites(
     use_case: FromDishka[DeleteFromFavoritesUseCase],
     current_user: User = Depends(get_current_user),
 ) -> OkResponse:
-    result = await use_case.execute(user_id=current_user.id, tour_id=body.tour_id)
-    return OkResponse(ok=result)
+    await use_case.execute(user_id=current_user.id, tour_id=body.tour_id)
+    return OkResponse(ok=True)
 
 
 @user_router.post("/me/favorites/merge", response_model=OkResponse)

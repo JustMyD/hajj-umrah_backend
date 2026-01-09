@@ -72,8 +72,10 @@ class UserProvider(Provider):
         return AddToFavoritesUseCase(user_repo, uow)
 
     @provide(scope=Scope.REQUEST)
-    def provide_remove_from_favorites_use_case(self, user_repo: UserRepository) -> DeleteFromFavoritesUseCase:
-        return DeleteFromFavoritesUseCase(user_repo)
+    def provide_remove_from_favorites_use_case(
+        self, user_repo: UserRepository, uow: UnitOfWork
+    ) -> DeleteFromFavoritesUseCase:
+        return DeleteFromFavoritesUseCase(user_repo, uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_merge_favorites_use_case(self, user_repo: UserRepository) -> MergeFavoritesUseCase:
