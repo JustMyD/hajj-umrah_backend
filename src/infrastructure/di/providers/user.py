@@ -54,29 +54,29 @@ class UserProvider(Provider):
         self,
         repo: EmailChangeRepository,
         user_repo: UserRepository,
-        uow: UnitOfWork
+        sqlalchemy_uow: UnitOfWork
     ) -> EmailChangeConfirmUseCase:
-        return EmailChangeConfirmUseCase(repo=repo, user_repo=user_repo, uow=uow)
+        return EmailChangeConfirmUseCase(repo=repo, user_repo=user_repo, uow=sqlalchemy_uow)
 
     @provide(scope=Scope.REQUEST)
-    def provide_add_to_comparison_use_case(self, user_repo: UserRepository, uow: UnitOfWork) -> AddToComparisonUseCase:
-        return AddToComparisonUseCase(user_repo, uow)
+    def provide_add_to_comparison_use_case(self, user_repo: UserRepository, sqlalchemy_uow: UnitOfWork) -> AddToComparisonUseCase:
+        return AddToComparisonUseCase(user_repo, sqlalchemy_uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_remove_from_comparison_use_case(
-        self, user_repo: UserRepository, uow: UnitOfWork
+        self, user_repo: UserRepository, slqalchemy_uow: UnitOfWork
     ) -> DeleteFromComparisonUseCase:
-        return DeleteFromComparisonUseCase(user_repo, uow)
+        return DeleteFromComparisonUseCase(user_repo, slqalchemy_uow)
 
     @provide(scope=Scope.REQUEST)
-    def provide_add_to_favorites_use_case(self, user_repo: UserRepository, uow: UnitOfWork) -> AddToFavoritesUseCase:
-        return AddToFavoritesUseCase(user_repo, uow)
+    def provide_add_to_favorites_use_case(self, user_repo: UserRepository, sqlalchemy_uow: UnitOfWork) -> AddToFavoritesUseCase:
+        return AddToFavoritesUseCase(user_repo, sqlalchemy_uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_remove_from_favorites_use_case(
-        self, user_repo: UserRepository, uow: UnitOfWork
+        self, user_repo: UserRepository, sqlalchemy_uow: UnitOfWork
     ) -> DeleteFromFavoritesUseCase:
-        return DeleteFromFavoritesUseCase(user_repo, uow)
+        return DeleteFromFavoritesUseCase(user_repo, sqlalchemy_uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_merge_favorites_use_case(self, user_repo: UserRepository) -> MergeFavoritesUseCase:
