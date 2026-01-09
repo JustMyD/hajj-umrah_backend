@@ -54,8 +54,9 @@ class UserProvider(Provider):
         self,
         repo: EmailChangeRepository,
         user_repo: UserRepository,
+        uow: UnitOfWork
     ) -> EmailChangeConfirmUseCase:
-        return EmailChangeConfirmUseCase(repo=repo, user_repo=user_repo)
+        return EmailChangeConfirmUseCase(repo=repo, user_repo=user_repo, uow=uow)
 
     @provide(scope=Scope.REQUEST)
     def provide_add_to_comparison_use_case(self, user_repo: UserRepository, uow: UnitOfWork) -> AddToComparisonUseCase:

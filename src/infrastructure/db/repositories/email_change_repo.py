@@ -62,7 +62,7 @@ class SqlAlchemyEmailChangeRepository(EmailChangeRepository):
             .returning(EmailChangeTokens.new_email)
         )
         new_email = res.scalar_one_or_none()
-        await self.session.commit()
+        await self.session.flush()
         return str(new_email) if new_email else None
 
 
